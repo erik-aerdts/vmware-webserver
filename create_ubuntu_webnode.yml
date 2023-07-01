@@ -1,0 +1,121 @@
+---
+- name: Webserver node
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - netlab-pass.yml      
+    - seclab.yml
+  tasks:
+  - name: Deploy webserver node from Ubuntu Server 20.04 template
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      template: "{{ ubuntu_template }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
+      state: present
+
+  - name: Attach internet NIC to the virtual machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      template: "{{ ubuntu_template }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
+      networks:
+        - name: "{{ network_portgroup_inet }}"
+          connected: yes
+          device_type: vmxnet3
+          start_connected: true
+      state: present
+
+  - name: Power on Virtual Machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      #template: "{{ ubuntu_template }}"
+      #datacenter: "{{ datacenter }}"
+      #datastore: "{{ datastore }}"
+      #folder: "{{ folder }}"
+      #resource_pool: "{{ resource_pool }}"
+      #networks:
+      #  - name: "{{ network_portgroup_inet }}"
+      #    connected: yes
+      #    #device_type: vmxnet3
+      #    start_connected: true
+      state: poweredon
+    register: webserver
+
+  - name: Pause for 90 seconds to get IP address
+    ansible.builtin.pause:
+       seconds: 90
+
+  - name: Gather a virtual machine info
+    vmware_guest_info:
+       hostname: '{{ hostname }}'
+       username: '{{ username }}'
+       password: '{{ password }}'
+       validate_certs: false
+       datacenter: "{{ datacenter }}"
+       name: "{{ name_prefix  }} Webserver node"
+    register: gather_vm_info
+
+  - name: get IP address VM        
+    debug:
+      msg: >-
+          {{ gather_vm_info.instance.hw_eth0.ipaddresses
+            | map('ipaddr', 'ipv4')
+            | select('!=', false)
+            | list
+            | first
+          }}
+    register: output
+
+
+## Put Ip to new Host list named virtual
+
+  - add_host: name={{ gather_vm_info.instance.hw_eth0.ipaddresses[0] }} groups=virtual
+
+- name: part2
+  hosts: virtual
+  become: true
+  user: student
+  vars:
+    user: student
+    ansible_sudo_pass: "student"
+    
+    
+    ## Debug para validar que tenemos el nombre de la VM para cambiar el hostname (Revisar Fact Caching)
+  tasks:
+    - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
+  tasks:
+
+    - name: run ssh-keyscan to add keys to known_hosts
+      command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
+
+## installeer apache2.
+  tasks:
+    - name: instaleer apache2
+      apt: name=apache2 update_cache=yes state=latest
+    - name: starten apache
+      service: name=apache2 state=started
+  # - name:  host hernoemen
+      #hostname: name="{{ hostvars['localhost']['hw_name'] }}"
+
+
+
+
