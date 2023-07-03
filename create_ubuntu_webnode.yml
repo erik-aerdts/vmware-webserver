@@ -85,7 +85,7 @@
   tasks:
 
     - name: run sudo ssh-keyscan to add keys to known_hosts
-      command: sudo ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
+      command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
 
 ## installeer apache2.
   tasks:
