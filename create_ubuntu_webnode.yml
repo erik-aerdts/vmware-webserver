@@ -76,15 +76,14 @@
     user: student
     ansible_sudo_pass: "student"
     ansible_user: student
-    ansible_connection: ssh
-    
+    ansible_pass: student
     
     ## Debug para validar que tenemos el nombre de la VM para cambiar el hostname (Revisar Fact Caching)
   tasks:
     - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
   tasks:
 
-    - name: run sudo ssh-keyscan to add keys to known_hosts
+    - name: run  ssh-keyscan to add keys to known_hosts
       command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
 
 ## installeer apache2.
