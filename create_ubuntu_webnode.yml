@@ -81,7 +81,7 @@
       #    connected: yes
       #    device_type: vmxnet3
       #    start_connected: true
-      state: reboot-guest
+      state: restarted
 
   - name: Pause for 90 seconds to get IP address
     ansible.builtin.pause:
