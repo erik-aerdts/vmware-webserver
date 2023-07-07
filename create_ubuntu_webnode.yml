@@ -46,7 +46,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       validate_certs: False
-      name: "{{ name_prefix }}Webserver"
+      name: "{{ name_prefix }}Webserver" 
       #template: "{{ ubuntu_template }}"
       #datacenter: "{{ datacenter }}"
       #datastore: "{{ datastore }}"
