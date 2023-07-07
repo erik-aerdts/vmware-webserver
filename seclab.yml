@@ -6,7 +6,7 @@ datastore: "NIM01-Teachers"
 folder: "/Netlab-DC/vm/_Personal/Erik Aerdts"
 resource_pool: "_Teachers-RP"
 #resource_pool: "
-name_prefix: {{type}}
+#name_prefix: {{type}}
 network_portgroup_inet: "0345-Teachers-DHCP-192.168.230.x_23"
 network_portgroup_private: "0668_EAerdts_PvlanA"
 alpine_template: "Netlab-DC/vm/_Templates/Various/Templ_Alpine_Linux_3.13.2"
