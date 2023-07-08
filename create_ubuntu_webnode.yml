@@ -60,29 +60,6 @@
       state: poweredon
     register: webserver
  
-  - name: Pause for 10 seconds to get IP address
-    ansible.builtin.pause:
-       seconds: 10
-
-  - name: reboot VM
-    vmware_guest:
-      hostname: "{{ hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: False
-      name: "{{ name_prefix }}Webserver"
-      #template: "{{ ubuntu_template }}"
-      #datacenter: "{{ datacenter }}"
-      #datastore: "{{ datastore }}"
-      #folder: "{{ folder }}"
-      #resource_pool: "{{ resource_pool }}"
-      #networks:
-      #  - name: "{{ network_portgroup_inet }}"
-      #    connected: yes
-      #    device_type: vmxnet3
-      #    start_connected: true
-      state: restarted
-    register: webserver
 
   - name: Pause for 90 seconds to get IP address
     ansible.builtin.pause:
