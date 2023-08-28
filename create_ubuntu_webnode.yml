@@ -65,6 +65,29 @@
     ansible.builtin.pause:
        seconds: 60
 
+  - name: reboot VM
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }}Webserver"
+      #template: "{{ ubuntu_template }}"
+      #datacenter: "{{ datacenter }}"
+      #datastore: "{{ datastore }}"
+      #folder: "{{ folder }}"
+      #resource_pool: "{{ resource_pool }}"
+      #networks:
+      #  - name: "{{ network_portgroup_inet }}"
+      #    connected: yes
+      #    device_type: vmxnet3
+      #    start_connected: true
+      #state: restarted
+    register: webserver
+     
+  - name: Pause for 60 seconds to wait for VM
+    ansible.builtin.pause:
+       seconds: 60
 
 ## Put Ip to new Host list named virtual
 
