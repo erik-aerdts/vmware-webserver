@@ -82,7 +82,7 @@
       #    connected: yes
       #    device_type: vmxnet3
       #    start_connected: true
-      #state: restarted
+      state: restarted
     register: webserver
      
   - name: Pause for 60 seconds to wait for VM
