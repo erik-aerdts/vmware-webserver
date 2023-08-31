@@ -58,7 +58,7 @@
       #    #device_type: vmxnet3
       #    start_connected: true
       state: poweredon
-    register: webserver
+      #register: webserver
  
 
   - name: Pause for 90 seconds to get IP address
@@ -93,7 +93,7 @@
 
   - add_host: name={{ webserver.instance.hw_eth0.ipaddresses[0] }} groups=virtual
 
-- name: part2
+- name: Apache install
   hosts: virtual
   become: true
   user: student
