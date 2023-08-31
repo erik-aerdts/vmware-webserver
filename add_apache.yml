@@ -33,8 +33,20 @@
        seconds: 90
 
 ## Put Ip to new Host list named virtual
-
-  - add_host: name={{ tst_webserver.instance.hw_eth0.ipaddresses[0] }} groups=virtual
+  - name: Display the first interface set IP Address of a virtual machine
+    debug:
+      msg: >-
+        {{ tst_webserver.instance.hw_eth0.ipaddresses
+          | map('ipaddr', 'ipv4')
+          | select('!=', false)
+          | list
+          | first
+        }}
+  - add_host: name={{ tst_webserver.instance.hw_eth0.ipaddresses
+          | map('ipaddr', 'ipv4')
+          | select('!=', false)
+          | list
+          | first }} groups=virtual
 
 - name: Apache install
   hosts: virtual
