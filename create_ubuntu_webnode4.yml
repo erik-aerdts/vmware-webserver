@@ -60,9 +60,9 @@
       state: poweredon
     register: webserver
 
-  - name: Pause for 90 seconds to get IP address
+  - name: Pause for 60 seconds to get IP address
     ansible.builtin.pause:
-       seconds: 90
+       seconds: 60
 
 ## Put Ip to new Host list named virtual
 
