@@ -25,7 +25,7 @@
       #    #device_type: vmxnet3
       #    start_connected: true
       state: poweredon
-      register: tst_webserver
+    register: tst_webserver
 
 
   - name: Pause for 90 seconds to get IP address
@@ -65,4 +65,59 @@
 
 
 
+ tasks:
+  - name: Power on Virtual Machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }}Webserver"
+      #template: "{{ ubuntu_template }}"
+      #datacenter: "{{ datacenter }}"
+      #datastore: "{{ datastore }}"
+      #folder: "{{ folder }}"
+      #resource_pool: "{{ resource_pool }}"
+      #networks:
+      #  - name: "{{ network_portgroup_inet }}"
+      #    connected: yes
+      #    #device_type: vmxnet3
+      #    start_connected: true
+      state: poweredon
+    register: prd_webserver
 
+
+  - name: Pause for 90 seconds to get IP address
+    ansible.builtin.pause:
+       seconds: 90
+
+## Put Ip to new Host list named virtual
+
+  - add_host: name={{ prd_webserver.instance.hw_eth0.ipaddresses[0] }} groups=virtual
+
+- name: Apache install
+  hosts: virtual
+  become: true
+  user: student
+  vars:
+    user: student
+    ansible_sudo_pass: "student"
+    ansible_user: student
+    ansible_pass: student
+
+ ## Debug message
+  tasks:
+    - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
+  tasks:
+
+    - name: run  ssh-keyscan to add keys to known_hosts
+      command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
+
+## installeer apache2.
+  tasks:
+    - name: instaleer apache2
+      apt: name=apache2 update_cache=yes state=latest
+    - name: starten apache
+      service: name=apache2 state=started
+  # - name:  host hernoemen
+      #hostname: name="{{ hostvars['localhost']['hw_name'] }}"
