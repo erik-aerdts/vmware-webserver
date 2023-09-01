@@ -15,16 +15,16 @@
       validate_certs: False
       name: "{{ name_prefix }}Webserver" 
       #template: "{{ ubuntu_template }}"
-      #datacenter: "{{ datacenter }}"
-      #datastore: "{{ datastore }}"
-      #folder: "{{ folder }}"
-      #resource_pool: "{{ resource_pool }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
       #networks:
       #  - name: "{{ network_portgroup_inet }}"
       #    connected: yes
       #    #device_type: vmxnet3
       #    start_connected: true
-      state: poweredon
+      state: restarted
     register: tst_webserver
 
 
