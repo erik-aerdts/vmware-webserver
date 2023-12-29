@@ -5,7 +5,7 @@
   gather_facts: no
   vars_files:
     - netlab-pass.yml      
-    - seclab.yml
+    - netlab.yml
   tasks:
   - name: Deploy webserver node from Ubuntu Server 20.04 template
     vmware_guest:
