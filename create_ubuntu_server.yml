@@ -1,0 +1,65 @@
+---
+- name: Webserver node
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - netlab-pass.yml      
+    - netlab.yml
+  tasks:
+  - name: Deploy webserver node from Ubuntu Server 20.04 template
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      template: "{{ ubuntu_template }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
+      state: present
+
+  - name: Attach internet NIC to the virtual machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      template: "{{ ubuntu_template }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
+      networks:
+        - name: "{{ network_portgroup_inet }}"
+          connected: yes
+          device_type: vmxnet3
+          start_connected: true
+      state: present
+
+  - name: Power on Virtual Machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }} Webserver node"
+      #template: "{{ ubuntu_template }}"
+      #datacenter: "{{ datacenter }}"
+      #datastore: "{{ datastore }}"
+      #folder: "{{ folder }}"
+      #resource_pool: "{{ resource_pool }}"
+      #networks:
+      #  - name: "{{ network_portgroup_inet }}"
+      #    connected: yes
+      #    #device_type: vmxnet3
+      #    start_connected: true
+      state: poweredon
+    register: webserver
+
+  - name: Pause for 60 seconds to get IP address
+    ansible.builtin.pause:
+       seconds: 60
