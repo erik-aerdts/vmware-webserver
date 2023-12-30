@@ -13,7 +13,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       validate_certs: False
-      name: "{{ name_prefix }} Webserver node"
+      name: "{{ name_prefix }} Webserver"
       template: "{{ ubuntu_template }}"
       datacenter: "{{ datacenter }}"
       datastore: "{{ datastore }}"
@@ -27,7 +27,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       validate_certs: False
-      name: "{{ name_prefix }} Webserver node"
+      name: "{{ name_prefix }} Webserver"
       template: "{{ ubuntu_template }}"
       datacenter: "{{ datacenter }}"
       datastore: "{{ datastore }}"
@@ -46,7 +46,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       validate_certs: False
-      name: "{{ name_prefix }} Webserver node"
+      name: "{{ name_prefix }} Webserver"
       #template: "{{ ubuntu_template }}"
       #datacenter: "{{ datacenter }}"
       #datastore: "{{ datastore }}"
