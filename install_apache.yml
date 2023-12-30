@@ -5,6 +5,7 @@
   become: true
   user: student
   vars:
+    webserver: "{{ name_prefix }} Webserver"
     user: student
     ansible_sudo_pass: "student"
     
