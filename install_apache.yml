@@ -1,0 +1,28 @@
+ 
+
+- name: install apache2
+  hosts: virtual
+  become: true
+  user: student
+  vars:
+    user: student
+    ansible_sudo_pass: "student"
+    
+  tasks:
+    - add_host: name={{ webserver.instance.hw_eth0.ipaddresses[0] }} groups=virtual
+    ## Debug para validar que tenemos el nombre de la VM para cambiar el hostname (Revisar Fact Caching)
+  tasks:
+    - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
+  tasks:
+
+    - name: run ssh-keyscan to add keys to known_hosts
+      command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
+
+## installeer apache2.
+  tasks:
+    - name: instaleer apache2
+      apt: name=apache2 update_cache=yes state=latest
+    - name: starten apache
+      service: name=apache2 state=started
+  # - name:  host hernoemen
+      #hostname: name="{{ hostvars['localhost']['hw_name'] }}"
