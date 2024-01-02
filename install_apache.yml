@@ -4,7 +4,7 @@
   connection: local
   gather_facts: no
   vars_files:
-    - netlab-pass.yml      
+    - netlab-pass.yml
     - netlab.yml
   tasks:
   - name: get webserver node vmware
@@ -14,19 +14,26 @@
       password: "{{ password }}"
       validate_certs: False
       name: "{{ name_prefix }} Webserver"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
       state: present
-      register: webserver
-  
+    register: webserver
+
   - add_host: name={{ webserver.instance.hw_eth0.ipaddresses[0] }} groups=webservers
 
 - name: install apache2
   hosts: webservers
   become: true
+  gather_facts: no
   user: student
   vars:
     user: student
     ansible_sudo_pass: "student"
-    
+    ansible_user: student
+    ansible_password: student
+
     ## Debug para validar que tenemos el nombre de la VM para cambiar el hostname (Revisar Fact Caching)
   tasks:
     - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
