@@ -45,7 +45,7 @@
 ## installeer Mysql
   tasks:
     - name: instaleer mysql
-      apt: name=mysql update_cache=yes state=latest
+      apt: name=mysql-server update_cache=yes state=latest
     - name: starten mysql
       service: name=mysql state=started
   # - name:  host hernoemen
