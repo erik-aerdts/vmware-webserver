@@ -1,0 +1,76 @@
+---
+- name: Webserver node
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - netlab-pass.yml      
+    - seclab.yml
+  tasks:
+  - name: Power on Virtual Machine
+    vmware_guest:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      name: "{{ name_prefix }}Webserver" 
+      #template: "{{ ubuntu_template }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      resource_pool: "{{ resource_pool }}"
+      #networks:
+      #  - name: "{{ network_portgroup_inet }}"
+      #    connected: yes
+      #    #device_type: vmxnet3
+      #    start_connected: true
+      state: restarted
+    register: tst_webserver
+
+
+  - name: Pause for 90 seconds to get IP address
+    ansible.builtin.pause:
+       seconds: 90
+
+## Put Ip to new Host list named virtual
+  - name: Display the first interface set IP Address of a virtual machine
+    debug:
+      msg: >-
+        {{ tst_webserver.instance.hw_eth0.ipaddresses
+          | map('ipaddr', 'ipv4')
+          | select('!=', false)
+          | list
+          | first
+        }}
+  - add_host: name={{ tst_webserver.instance.hw_eth0.ipaddresses
+          | map('ipaddr', 'ipv4')
+          | select('!=', false)
+          | list
+          | first }} groups=virtual
+
+- name: Mysql install
+  hosts: virtual
+  become: true
+  user: student
+  vars:
+    user: student
+    ansible_sudo_pass: "student"
+    ansible_user: student
+    ansible_pass: student
+    
+  ## Debug message
+  tasks:
+    - debug: msg= "{{ hostvars['localhost'][' {{ hosts}} '] }}"
+  tasks:
+
+    - name: run  ssh-keyscan to add keys to known_hosts
+      command: ssh-keyscan {{ inventory_hostname }} >> ~/.ssh/known_hosts
+
+## installeer apache2.
+  tasks:
+    - name: instaleer mysql
+      apt: name=mysql update_cache=yes state=latest
+    - name: starten mysql
+      service: name=mysqld state=started
+  # - name:  host hernoemen
+      #hostname: name="{{ hostvars['localhost']['hw_name'] }}"
