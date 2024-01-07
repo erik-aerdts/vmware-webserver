@@ -1,10 +1,15 @@
- pipeline{
+pipeline{
     agent any
    parameters {
         booleanParam(
             name: 'DEPLOY_APACHE',
             defaultValue: false,
             description: 'Should Apache be installed?'
+        )
+         booleanParam(
+            name: 'DEPLOY_MYSQL',
+            defaultValue: false,
+            description: 'Should MySQL be installed?'
         )
     }
     stages{
@@ -16,6 +21,8 @@
                 //echo " de waarde is: ${env.apache2} " 
                  def deployAPACHE = params.DEPLOY_APACHE
                     echo "Deploy APACHE: ${deployAPACHE}"
+                 def deployMYSQL = params.DEPLOY_MYSQL
+                    echo "Deploy MYSQL: ${deployMYSQL}"
                        }
             }
         }
@@ -26,12 +33,12 @@
         }
          stage('Create VM'){
             steps{
-                echo "doemaarffwat"
-               //ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'create_ubuntu_server.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
+               // echo "doemaarffwat"
+               ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'create_ubuntu_server.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
             }    
         }
          stage('install Apache'){
-           //  when {expression{env.apache2.toboolean == true} }
+           
             when {
                 expression {
                     // Checking the boolean variable for deployment
@@ -39,8 +46,21 @@
                 }
             }
             steps{
-                echo "doemaarffwat"
-             //  ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'install_apache.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
+                //echo "doemaarffwat"
+               ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'install_apache.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
+            }    
+        }
+        stage('install Mysql'){
+           
+            when {
+                expression {
+                    // Checking the boolean variable for deployment
+                    return params.DEPLOY_MYSQL == true
+                }
+            }
+            steps{
+               // echo "doemaarffwat"
+               ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'install_mysql.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
             }    
         }
                
