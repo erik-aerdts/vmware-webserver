@@ -1,0 +1,49 @@
+ pipeline{
+    agent any
+   parameters {
+        booleanParam(
+            name: 'DEPLOY_APACHE',
+            defaultValue: false,
+            description: 'Should Apache be installed?'
+        )
+    }
+    stages{
+        stage('input'){
+            steps {
+                script {
+               // env.apache2 = input message: 'apache?',
+                // parameters: [booleanParam(name: 'apache2', defaultValue: false, description: '')]
+                //echo " de waarde is: ${env.apache2} " 
+                 def deployAPACHE = params.DEPLOY_APACHE
+                    echo "Deploy APACHE: ${deployAPACHE}"
+                       }
+            }
+        }
+         stage('SCM Checkout'){
+            steps{
+                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/erik-aerdts/vmware-webserver.git'
+                  }
+        }
+         stage('Create VM'){
+            steps{
+                echo "doemaarffwat"
+               //ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'create_ubuntu_server.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
+            }    
+        }
+         stage('install Apache'){
+           //  when {expression{env.apache2.toboolean == true} }
+            when {
+                expression {
+                    // Checking the boolean variable for deployment
+                    return params.DEPLOY_APACHE == true
+                }
+            }
+            steps{
+                echo "doemaarffwat"
+             //  ansiblePlaybook becomeUser: 'student', credentialsId: 'student', installation: 'ansible', playbook: 'install_apache.yml', sudoUser: 'student', vaultCredentialsId: 'ansiblevault', vaultTmpPath: ''
+            }    
+        }
+               
+    }
+ }    
+
